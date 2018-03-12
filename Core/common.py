@@ -3,7 +3,6 @@
 from urllib.parse import urlparse
 import socket
 
-# 生成ip和port列表
 def create_list(x):
     List = []
     x = str(x)
@@ -29,7 +28,6 @@ def create_list(x):
     return List
 
 
-# 通过域名解析ip
 
 def get_host_by_name(url):
     domain = urlparse(url)

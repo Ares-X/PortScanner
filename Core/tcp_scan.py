@@ -1,17 +1,31 @@
 # -*- coding: utf-8 -*-
 import socket
-# 进度判断
-progress=0
-#储存扫描结果
-dict_res = []
 
-def return_progress():
-    return progress
+class Progress:
+    progress=0
+    dict_res=[]
+    def get_progress():
+        return Progress.progress
+    def add_progress():
+        Progress.progress+=1
+    def clear_progress():
+        Progress.progress=0
+        Progress.dict_res=[]
+    def dict_append(str):
+        Progress.dict_res.append(str)
+    def result_append(ip,result):
+        for i in Progress.dict_res:
+            if list(i.keys())[0]==ip:
+                flag=Progress.dict_res.index(i)
+                Progress.dict_res[flag][ip].append(result)
+    def get_result():
+        return Progress.dict_res
 
-# TCP全连接扫描
+progress=Progress
+
+
 def connect_scan(targetHost,targetPort,t,lock):
     global progress
-#def connect_scan(targetHost,targetPort):
     targetPort = int(targetPort)
     try:
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
@@ -19,31 +33,23 @@ def connect_scan(targetHost,targetPort,t,lock):
         res = s.connect_ex((targetHost,targetPort))
         if res == 0:
             s.send(b'PortScan')
-            banner = s.recv(1024)  # 获取Banner
-            service = socket.getservbyport(targetPort)  # 获取服务名
+            banner = s.recv(1024) 
+            service = socket.getservbyport(targetPort)  
             #lock.acquire()
             print ('[+] ' + str(targetPort) + " " * (6 - (len(str(targetPort)) - 2)) + 'open       ' + service + " " * (
             9 - (len(str(service)) - 2)) + str(banner).replace('\r\n','').strip())
             s.close()
             result=[str(targetPort),str(service),str(banner)]
-            result_append(targetHost,result)
-            progress += 1
+            progress.result_append(targetHost,result)
+            progress.add_progress()
             #lock.release()
             #print (progress)
-            #return [str(targetPort),str(service),str(banner)]
+            return [str(targetPort),str(service),str(banner)]
         else:
-            progress += 1
+            progress.add_progress()
     except Exception as e:
-        pass
+        progress.add_progress()
         #lock.acquire()
-        #print ('[-] ' + str(targetPort) + " " * (6 - (len(str(targetPort)) - 2)) + str(e))
+        print ('[-] ' + str(targetPort) + " " * (6 - (len(str(targetPort)) - 2)) + str(e))
         #lock.release()
     t.release()
-
-
-def result_append(ip,result):
-    global dict_res
-    for i in dict_res:
-        if list(i.keys())[0]==ip:
-            flag=dict_res.index(i)
-            dict_res[flag][ip].append(result)
