@@ -21,8 +21,7 @@ print "            PortScanner.py -H 192.168.1.1"
 
 def tcp_scanner(ip,port):
     global progress
-    s = threading.Semaphore(300)
-    start = time.clock()
+    s = threading.Semaphore(500)
     l=threading.Lock()
     for i in ip:
         num=len(port)
@@ -35,8 +34,8 @@ def tcp_scanner(ip,port):
             if progress.get_progress()==num:
                 break
         progress.clear_progress()
-    end = time.clock()
-    print("use: %f s" % (end - start))
+
+
 
 
 

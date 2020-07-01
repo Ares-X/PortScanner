@@ -44,10 +44,11 @@ def port_scan():
                                             """ % (" ", list(i.values())[0][s][0], list(i.values())[0][s][1], list(i.values())[0][s][2])
                             templates += add_table
                     templates += "</tbody></table><script src=\"/reload\"></script>"
-                    clear_progress()
+                    #clear_progress()
                     print(dict_res)
                     return render_template('index.html', data=Markup(templates))
-                except:
+                except Exception as e:
+                    print (e)
                     templates = "<div class=\"alert alert-danger error\" role=\"alert\">网络错误</div>"
                     return render_template('index.html',data=Markup(templates))
             else:
@@ -70,3 +71,4 @@ app.run(host = '0.0.0.0',debug=True)
 c = 000000000000000000000000000000000
 00000000
 0000
+00

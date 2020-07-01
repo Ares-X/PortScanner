@@ -29,16 +29,22 @@ def connect_scan(targetHost,targetPort,t,lock):
     targetPort = int(targetPort)
     try:
         s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-        s.settimeout(0.5)
+        s.settimeout(3)
         res = s.connect_ex((targetHost,targetPort))
         if res == 0:
             s.send(b'PortScan')
-            banner = s.recv(1024) 
-            service = socket.getservbyport(targetPort)  
+            try:
+                banner = s.recv(2048)
+            except:
+                banner = ""
+
+            s.close()
+            service = socket.getservbyport(targetPort)
             #lock.acquire()
             print ('[+] ' + str(targetPort) + " " * (6 - (len(str(targetPort)) - 2)) + 'open       ' + service + " " * (
             9 - (len(str(service)) - 2)) + str(banner).replace('\r\n','').strip())
-            s.close()
+            
+            
             result=[str(targetPort),str(service),str(banner)]
             progress.result_append(targetHost,result)
             progress.add_progress()

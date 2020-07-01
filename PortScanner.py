@@ -19,7 +19,7 @@ def tcp_scanner(ip,port):
     num=len(port)*len(ip)
     s = threading.Semaphore(500)
     lock=threading.Lock()
-    start = time.clock()
+
     for i in ip:
         progress.dict_append({i:[]})
         print ("HOST ADDRESS: %s" % i)
@@ -29,9 +29,7 @@ def tcp_scanner(ip,port):
             threading.Thread(target=connect_scan,args=(i,j,s,lock)).start()
     while True:
         if progress.get_progress()==num:
-            end = time.clock()
-            useTime=end-start
-            print("Use: "+str(useTime))
+            print("done")
             return progress.get_result()
 
 
